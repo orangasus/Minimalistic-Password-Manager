@@ -1,5 +1,7 @@
 import sqlite3
 
+# TODO:
+#   Add checker for values item uniqueness
 
 class UserTableManager:
     def __init__(self, connection):
@@ -119,6 +121,19 @@ class CredentialsTableManager:
             return self.cur.fetchall()
         except sqlite3.Error as e:
             print(f"Error retrieving credential: {e}")
+
+    def check_if_item_is_unique_for_user(self, user_login, cred_name,
+                                         cred_login, cred_password):
+        try:
+            self.cur.execute('SELECT ID FROM CREDENTIALS WHERE USER_LOGIN = ? AND CRED_NAME = ? AND CRED_LOGIN = ? AND CRED_PASSWORD = ?',
+                             (user_login, cred_name, cred_login, cred_password))
+            res = self.cur.fetchall()
+            if len(res) != 0:
+                return False
+            return True
+        except sqlite3.Error as e:
+            print(f"Error checking uniqueness: {e}")
+
 
 
 class DataBaseManager:
