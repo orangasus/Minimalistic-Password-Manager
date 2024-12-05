@@ -47,7 +47,7 @@ class UserTableManager:
     def get_user_password(self, login):
         try:
             self.cur.execute('SELECT USER_PASSWORD FROM USERS WHERE USER_LOGIN = ?', (login,))
-            return self.cur.fetchone()
+            return self.cur.fetchone()[0]
         except sqlite3.Error as e:
             print(f"Error retrieving password: {e}")
 
