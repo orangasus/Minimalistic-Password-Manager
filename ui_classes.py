@@ -18,6 +18,8 @@ class AppWindow(tk.Tk):
 
         self.frames_list = []
 
+        self.user_items_list = []
+
         self.add_list_item_frame = None
         self.login_form_frame = None
         self.create_user_frame = None
@@ -36,12 +38,20 @@ class AppWindow(tk.Tk):
 
         self.frames_list.extend([self.add_list_item_frame, self.login_form_frame,
                                  self.create_user_frame, self.user_content_frame])
+
     def add_all_frames_to_grid(self):
         for frame in self.frames_list:
             frame.grid(row=0, column=0, sticky='news')
 
     def show_frame(self, frame):
         frame.tkraise()
+
+    def fill_user_items_list(self):
+        self.user_items_list = []
+        db_items = self.db_manager.cred_table_manager.get_all_creds_items_by_user(self.app_state['cur_user'])
+        for item in db_items:
+            print(item)
+            self.user_items_list.append(CredItem(item))
 
 
 class StandardFrame(tk.Frame):
@@ -54,26 +64,31 @@ class StandardFrame(tk.Frame):
 class UserContentFrame(StandardFrame):
     def __init__(self, parent, controller):
         super().__init__(parent, controller)
-        self.cred_items = self.get_user_cred_items(self.controller.app_state['cur_user'])
 
         self.create_item_button = tk.Button(self, command=self.on_create_item_btn_click, text='CREATE ITEM')
 
+        self.cred_listbox_scrollbar = tk.Scrollbar(self)
+        self.cred_listbox = tk.Listbox(self, bg='red', yscrollcommand=self.cred_listbox_scrollbar.set)
+        self.cred_listbox_scrollbar.configure(command=self.cred_listbox.yview)
+
         self.fill_window_layout()
 
-    def fill_window_layout(self):
-        self.create_item_button.pack()
+    def clear_items_listbox(self):
+        self.cred_listbox.delete(0, self.cred_listbox.size()-1)
 
-    def get_user_cred_items(self, user):
-        res = []
-        db_res = self.db_manager.cred_table_manager.get_all_creds_items_by_user(user)
-        for item in db_res:
-            res.append(CredItem(item))
-        return res
+    def upload_items_to_listbox(self):
+        self.clear_items_listbox()
+        for i, cred_item in enumerate(self.controller.user_items_list):
+            listbox_item_name = f'{cred_item.cred_name} - {cred_item.cred_login}'
+            self.cred_listbox.insert(i, listbox_item_name)
+
+    def fill_window_layout(self):
+        self.cred_listbox.pack(fill=tk.BOTH, side=tk.LEFT)
+        self.cred_listbox_scrollbar.pack(fill=tk.Y, side=tk.RIGHT)
+        self.create_item_button.pack(side=tk.BOTTOM)
 
     def on_create_item_btn_click(self):
-        self.db_manager.cred_table_manager.insert_creds_item(self.controller.app_state['cur_user'], 'name', 'login',
-                                                             'pswd')
-        self.cred_items = self.get_user_cred_items(self.controller.app_state['cur_user'])
+        self.controller.show_frame(self.controller.add_list_item_frame)
 
 
 class CreateUserFrame(StandardFrame):
@@ -135,6 +150,8 @@ class LoginIntoAppFrame(StandardFrame):
             real_password = self.db_manager.user_table_manager.get_user_password(login)
             if real_password == password:
                 self.controller.app_state['cur_user'] = login
+                self.controller.fill_user_items_list()
+                self.controller.user_content_frame.upload_items_to_listbox()
                 self.controller.show_frame(self.controller.user_content_frame)
             else:
                 print('Wrong password')
@@ -149,19 +166,16 @@ class AddListItemFrame(StandardFrame):
         self.str_var_cred_login = tk.StringVar()
         self.str_var_cred_password = tk.StringVar()
         self.str_var_cred_name = tk.StringVar()
-        self.str_var_user_login = tk.StringVar()
 
         self.cred_login_entry = tk.Entry(self, textvariable=self.str_var_cred_login)
         self.cred_password_entry = tk.Entry(self, textvariable=self.str_var_cred_password)
         self.cred_name_entry = tk.Entry(self, textvariable=self.str_var_cred_name)
-        self.user_login_entry = tk.Entry(self, textvariable=self.str_var_user_login)
 
         self.save_cred_button = tk.Button(self, text='SAVE', command=self.on_save_btn_click)
 
         self.fill_window_layout()
 
     def fill_window_layout(self):
-        self.user_login_entry.pack()
         self.cred_name_entry.pack()
         self.cred_login_entry.pack()
         self.cred_password_entry.pack()
@@ -169,10 +183,12 @@ class AddListItemFrame(StandardFrame):
 
     def on_save_btn_click(self):
         self.db_manager.cred_table_manager.insert_creds_item(
-            self.str_var_user_login.get(), self.str_var_cred_name.get(),
+            self.controller.app_state['cur_user'], self.str_var_cred_name.get(),
             self.str_var_cred_login.get(), self.str_var_cred_password.get()
         )
-        self.controller.show_frame(self.controller.main_menu_frame)
+        self.controller.fill_user_items_list()
+        self.controller.user_content_frame.upload_items_to_listbox()
+        self.controller.show_frame(self.controller.user_content_frame)
 
 
 db_manager = DataBaseManager()
