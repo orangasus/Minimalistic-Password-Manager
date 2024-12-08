@@ -34,11 +34,14 @@ class UserContentFrame(StandardFrame):
 
         self.user_content_state = {'cur_item_ind': None}
 
-        self.item_info_frame = ItemInfoFrame(self, self)
+        self.item_frame_related_container = tk.Frame(self)
+
+        self.item_info_frame = ItemInfoFrame(self.item_frame_related_container, self)
+        self.item_edit_frame = EditCredItemFrame(self.item_frame_related_container, self)
 
         self.create_item_button = tk.Button(self, command=self.on_create_item_btn_click, text='CREATE')
         self.delete_item_button = tk.Button(self, command=self.on_delete_btn_click, text='DELETE')
-        self.edit_item_button = tk.Button(self, text='EDIT')
+        self.edit_item_button = tk.Button(self, command=self.on_edit_btn_click, text='EDIT')
 
         self.cred_listbox_scrollbar = tk.Scrollbar(self)
         self.cred_listbox = tk.Listbox(self, bg='red', yscrollcommand=self.cred_listbox_scrollbar.set,
@@ -47,6 +50,10 @@ class UserContentFrame(StandardFrame):
         self.cred_listbox.bind('<<ListboxSelect>>', self.on_items_list_click)
 
         self.fill_window_layout()
+        self.show_item_related_frame(self.item_info_frame)
+
+    def show_item_related_frame(self, frame):
+        frame.tkraise()
 
     def clear_items_listbox(self):
         self.cred_listbox.delete(0, self.cred_listbox.size() - 1)
@@ -67,7 +74,10 @@ class UserContentFrame(StandardFrame):
 
     def on_edit_btn_click(self):
         item_id = self.controller.user_items_list[self.user_content_state['cur_item_ind']].db_id
-        # ...
+        self.item_edit_frame.set_item_id(item_id)
+        self.item_edit_frame.upload_item_vals_to_entries()
+        # here
+        self.show_item_related_frame(self.item_edit_frame)
 
     def upload_items_to_listbox(self):
         self.clear_items_listbox()
@@ -76,12 +86,15 @@ class UserContentFrame(StandardFrame):
             self.cred_listbox.insert(i, listbox_item_name)
 
     def fill_window_layout(self):
-        self.item_info_frame.grid(row=0, column=2, columnspan=3, sticky='news')
+        self.item_frame_related_container.grid(row=0, column=2, columnspan=3, sticky='news')
         self.cred_listbox.grid(row=0, column=0, rowspan=2)
         self.cred_listbox_scrollbar.grid(row=0, column=1, rowspan=2, sticky='ns')
         self.create_item_button.grid(row=1, column=2)
         self.delete_item_button.grid(row=1, column=3)
         self.edit_item_button.grid(row=1, column=4)
+
+        self.item_info_frame.grid(row=0, column=0, sticky='news')
+        self.item_edit_frame.grid(row=0, column=0, sticky='news')
 
     def initialize_frame_grid(self):
         pass
@@ -119,4 +132,46 @@ class AddListItemFrame(StandardFrame):
         )
         self.controller.fill_user_items_list()
         self.controller.user_content_frame.upload_items_to_listbox()
-        self.controller.show_frame(self.controller.user_content_frame)
+        self.controller.show_item_related_frame(self.controller.user_content_frame)
+
+
+class EditCredItemFrame(StandardFrame):
+    def __init__(self, parent, controller):
+        super().__init__(parent, controller)
+        self.item_id = 0
+
+        self.cred_name_sv = tk.StringVar()
+        self.cred_login_sv = tk.StringVar()
+        self.cred_password_sv = tk.StringVar()
+
+        self.cred_name_entry = tk.Entry(self, textvariable=self.cred_name_sv)
+        self.cred_login_entry = tk.Entry(self, textvariable=self.cred_login_sv)
+        self.cred_password_entry = tk.Entry(self, textvariable=self.cred_password_sv)
+
+        self.save_changes_button = tk.Button(self, text='SAVE', command=self.on_save_btn_click)
+
+        self.fill_window_layout()
+
+    def fill_window_layout(self):
+        self.cred_name_entry.pack()
+        self.cred_login_entry.pack()
+        self.cred_password_entry.pack()
+        self.save_changes_button.pack()
+
+    def set_item_id(self, id):
+        self.item_id = id
+
+    def upload_item_vals_to_entries(self):
+        item = self.controller.controller.user_items_list[self.controller.user_content_state['cur_item_ind']]
+        self.cred_name_sv.set(item.cred_name)
+        self.cred_login_sv.set(item.cred_login)
+        self.cred_password_sv.set(item.cred_pwd)
+
+    def on_save_btn_click(self):
+        self.controller.db_manager.cred_table_manager.update_creds_item_by_id(
+            self.item_id, self.cred_login_sv.get(),
+            self.cred_password_sv.get(), self.cred_name_sv.get()
+        )
+        self.controller.controller.fill_user_items_list()
+        self.controller.upload_items_to_listbox()
+        self.controller.show_item_related_frame(self.controller.item_info_frame)
