@@ -92,6 +92,14 @@ class CredentialsTableManager:
         except sqlite3.Error as e:
             print(f"Error deleting credential: {e}")
 
+    def search_for_item_match(self, user, cred_name, cred_login, cred_password):
+        try:
+            self.cur.execute('SELECT ID FROM CREDENTIALS WHERE USER_LOGIN = ? AND CRED_LOGIN = ? AND CRED_PASSWORD = ? AND CRED_NAME = ?',
+                             (user, cred_login, cred_password, cred_name))
+            return self.cur.fetchone()
+        except sqlite3.Error as e:
+            print(f"Error searching for item match: {e}")
+
     def update_creds_item_by_id(self, item_id, cred_login, cred_password, cred_name):
         try:
             self.cur.execute('UPDATE CREDENTIALS SET CRED_LOGIN = ?, CRED_PASSWORD = ?, CRED_NAME = ? WHERE ID = ?',
