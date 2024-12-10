@@ -14,6 +14,10 @@ class ItemInfoFrame(StandardFrame):
         self.cred_login_sv = tk.StringVar()
         self.cred_password_sv = tk.StringVar()
 
+        self.cred_login_head_label = tk.Label(self, text='Login')
+        self.cred_password_head_label = tk.Label(self, text='Password')
+        self.cred_name_head_label = tk.Label(self, text='Name')
+
         self.cred_name_label = tk.Label(self, textvariable=self.cred_name_sv)
         self.cred_login_label = tk.Label(self, textvariable=self.cred_login_sv)
         self.cred_password_label = tk.Label(self, textvariable=self.cred_password_sv)
@@ -24,7 +28,6 @@ class ItemInfoFrame(StandardFrame):
         self.copy_login_button = tk.Button(self, command=self.on_copy_login_btn_click, text='COPY')
         self.copy_pswd_button = tk.Button(self, command=self.on_copy_pswd_btn_click, text='COPY')
 
-        self.set_up_grid()
         self.fill_window_layout()
 
     def on_copy_pswd_btn_click(self):
@@ -42,29 +45,35 @@ class ItemInfoFrame(StandardFrame):
     def on_delete_btn_click(self):
         item_id = self.controller.controller.user_items_list[self.controller.user_content_state['cur_item_ind']].db_id
         self.controller.db_manager.cred_table_manager.delete_creds_item_by_id(item_id)
-        self.controller.fill_user_items_list()
+        self.controller.controller.fill_user_items_list()
         self.controller.clear_items_listbox()
         self.controller.upload_items_to_listbox()
+        self.controller.show_item_related_frame(self.controller.item_empty_frame)
 
     def fill_window_layout(self):
-        self.cred_name_label.grid(row=0, column=0, columnspan=2)
-        self.cred_login_label.grid(row=1, column=0, columnspan=2)
-        self.copy_login_button.grid(row=1, column=2)
-        self.cred_password_label.grid(row=2, column=0, columnspan=2)
-        self.copy_pswd_button.grid(row=2, column=2)
-        self.edit_item_button.grid(row=3, column=0)
-        self.delete_item_button.grid(row=3, column=2)
-
-    def set_up_grid(self):
-        self.rowconfigure(0, weight=1)
-        self.rowconfigure(1, weight=1)
-        self.rowconfigure(2, weight=1)
-        self.rowconfigure(3, weight=0)
+        self.cred_name_head_label.grid(row=0, column=0, columnspan=2)
+        self.cred_name_label.grid(row=1, column=0, columnspan=2)
+        self.cred_login_head_label.grid(row=2, column=0, columnspan=2)
+        self.cred_login_label.grid(row=3, column=0, columnspan=2)
+        self.copy_login_button.grid(row=3, column=2)
+        self.cred_password_head_label.grid(row=4, column=0, columnspan=2)
+        self.cred_password_label.grid(row=5, column=0, columnspan=2)
+        self.copy_pswd_button.grid(row=5, column=2)
+        self.edit_item_button.grid(row=6, column=0)
+        self.delete_item_button.grid(row=6, column=2)
 
     def update_labels_info(self, name, login, password):
         self.cred_name_sv.set(name)
         self.cred_login_sv.set(login)
         self.cred_password_sv.set(password)
+
+
+class EmptyFrame(StandardFrame):
+    def __init__(self, parent, controller):
+        super().__init__(parent, controller)
+
+        self.label = tk.Label(self, text='Nothing Selected')
+        self.label.pack()
 
 
 class UserContentFrame(StandardFrame):
@@ -78,6 +87,7 @@ class UserContentFrame(StandardFrame):
         self.item_info_frame = ItemInfoFrame(self.item_frame_related_container, self)
         self.item_edit_frame = EditCredItemFrame(self.item_frame_related_container, self)
         self.item_create_frame = AddListItemFrame(self.item_frame_related_container, self)
+        self.item_empty_frame = EmptyFrame(self.item_frame_related_container, self)
 
         self.create_item_button = tk.Button(self, command=self.on_create_item_btn_click, text='CREATE')
 
@@ -90,7 +100,7 @@ class UserContentFrame(StandardFrame):
         self.cred_listbox.bind('<<ListboxSelect>>', self.on_items_list_click)
 
         self.fill_window_layout()
-        self.show_item_related_frame(self.item_info_frame)
+        self.show_item_related_frame(self.item_empty_frame)
 
     def on_logout_btn_click(self):
         self.controller.user_items_list = []
@@ -104,11 +114,17 @@ class UserContentFrame(StandardFrame):
         self.cred_listbox.delete(0, self.cred_listbox.size() - 1)
 
     def on_items_list_click(self, event):
-        self.user_content_state['cur_item_ind'] = self.cred_listbox.curselection()[0]
-        selected_item = self.controller.user_items_list[self.user_content_state['cur_item_ind']]
-        self.item_info_frame.update_labels_info(selected_item.cred_name,
-                                                selected_item.cred_login,
-                                                selected_item.cred_pwd)
+        try:
+            self.user_content_state['cur_item_ind'] = self.cred_listbox.curselection()[0]
+        except IndexError:
+            self.user_content_state['cur_item_ind'] = None
+
+        if self.user_content_state['cur_item_ind'] is not None:
+            selected_item = self.controller.user_items_list[self.user_content_state['cur_item_ind']]
+            self.item_info_frame.update_labels_info(selected_item.cred_name,
+                                                    selected_item.cred_login,
+                                                    selected_item.cred_pwd)
+            self.show_item_related_frame(self.item_info_frame)
 
     def upload_items_to_listbox(self):
         self.clear_items_listbox()
@@ -125,10 +141,8 @@ class UserContentFrame(StandardFrame):
 
         self.item_info_frame.grid(row=0, column=0, sticky='news')
         self.item_edit_frame.grid(row=0, column=0, sticky='news')
-        self.item_create_frame.grid(row=0, column=0, stick='news')
-
-    def initialize_frame_grid(self):
-        pass
+        self.item_create_frame.grid(row=0, column=0, sticky='news')
+        self.item_empty_frame.grid(row=0, column=0, sticky='news')
 
     def on_create_item_btn_click(self):
         self.show_item_related_frame(self.item_create_frame)
@@ -141,6 +155,10 @@ class AddListItemFrame(StandardFrame):
         self.str_var_cred_login = tk.StringVar()
         self.str_var_cred_password = tk.StringVar()
         self.str_var_cred_name = tk.StringVar()
+
+        self.cred_login_label = tk.Label(self, text='Login')
+        self.cred_password_label = tk.Label(self, text='Password')
+        self.cred_name_label = tk.Label(self, text='Name')
 
         self.cred_login_entry = tk.Entry(self, textvariable=self.str_var_cred_login)
         self.cred_password_entry = tk.Entry(self, textvariable=self.str_var_cred_password)
@@ -168,8 +186,11 @@ class AddListItemFrame(StandardFrame):
         return True if res is None else False
 
     def fill_window_layout(self):
+        self.cred_name_label.pack()
         self.cred_name_entry.pack()
+        self.cred_login_label.pack()
         self.cred_login_entry.pack()
+        self.cred_password_label.pack()
         self.cred_password_entry.pack()
         self.save_cred_button.pack()
 
@@ -184,7 +205,7 @@ class AddListItemFrame(StandardFrame):
             )
             self.controller.controller.fill_user_items_list()
             self.controller.controller.user_content_frame.upload_items_to_listbox()
-            self.controller.show_item_related_frame(self.controller.item_info_frame)
+            self.controller.show_item_related_frame(self.controller.item_empty_frame)
 
 
 class EditCredItemFrame(StandardFrame):
@@ -225,5 +246,7 @@ class EditCredItemFrame(StandardFrame):
             self.cred_password_sv.get(), self.cred_name_sv.get()
         )
         self.controller.controller.fill_user_items_list()
+        self.controller.item_info_frame.update_labels_info(self.cred_name_sv.get(),
+                                                           self.cred_login_sv.get(), self.cred_password_sv.get())
         self.controller.upload_items_to_listbox()
         self.controller.show_item_related_frame(self.controller.item_info_frame)
