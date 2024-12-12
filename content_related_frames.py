@@ -1,6 +1,6 @@
 import tkinter as tk
-from tkinter import messagebox
 
+import customtkinter as ctk
 import pyperclip as pclip
 
 from standard_frame import StandardFrame
@@ -10,23 +10,23 @@ class ItemInfoFrame(StandardFrame):
     def __init__(self, parent, controller):
         super().__init__(parent, controller)
 
-        self.cred_name_sv = tk.StringVar()
-        self.cred_login_sv = tk.StringVar()
-        self.cred_password_sv = tk.StringVar()
+        self.cred_name_sv = ctk.StringVar()
+        self.cred_login_sv = ctk.StringVar()
+        self.cred_password_sv = ctk.StringVar()
 
-        self.cred_login_head_label = tk.Label(self, text='Login')
-        self.cred_password_head_label = tk.Label(self, text='Password')
-        self.cred_name_head_label = tk.Label(self, text='Name')
+        self.cred_login_head_label = ctk.CTkLabel(self, text='Login')
+        self.cred_password_head_label = ctk.CTkLabel(self, text='Password')
+        self.cred_name_head_label = ctk.CTkLabel(self, text='Name')
 
-        self.cred_name_label = tk.Label(self, textvariable=self.cred_name_sv)
-        self.cred_login_label = tk.Label(self, textvariable=self.cred_login_sv)
-        self.cred_password_label = tk.Label(self, textvariable=self.cred_password_sv)
+        self.cred_name_label = ctk.CTkLabel(self, textvariable=self.cred_name_sv)
+        self.cred_login_label = ctk.CTkLabel(self, textvariable=self.cred_login_sv)
+        self.cred_password_label = ctk.CTkLabel(self, textvariable=self.cred_password_sv)
 
-        self.delete_item_button = tk.Button(self, command=self.on_delete_btn_click, text='DELETE')
-        self.edit_item_button = tk.Button(self, command=self.on_edit_btn_click, text='EDIT')
+        self.delete_item_button = ctk.CTkButton(self, command=self.on_delete_btn_click, text='DELETE')
+        self.edit_item_button = ctk.CTkButton(self, command=self.on_edit_btn_click, text='EDIT')
 
-        self.copy_login_button = tk.Button(self, command=self.on_copy_login_btn_click, text='COPY')
-        self.copy_pswd_button = tk.Button(self, command=self.on_copy_pswd_btn_click, text='COPY')
+        self.copy_login_button = ctk.CTkButton(self, command=self.on_copy_login_btn_click, text='COPY')
+        self.copy_pswd_button = ctk.CTkButton(self, command=self.on_copy_pswd_btn_click, text='COPY')
 
         self.fill_window_layout()
 
@@ -72,7 +72,7 @@ class EmptyFrame(StandardFrame):
     def __init__(self, parent, controller):
         super().__init__(parent, controller)
 
-        self.label = tk.Label(self, text='Nothing Selected')
+        self.label = ctk.CTkLabel(self, text='Nothing Selected')
         self.label.pack()
 
 
@@ -82,18 +82,18 @@ class UserContentFrame(StandardFrame):
 
         self.user_content_state = {'cur_item_ind': None}
 
-        self.item_frame_related_container = tk.Frame(self)
+        self.item_frame_related_container = ctk.CTkFrame(self)
 
         self.item_info_frame = ItemInfoFrame(self.item_frame_related_container, self)
         self.item_edit_frame = EditCredItemFrame(self.item_frame_related_container, self)
         self.item_create_frame = AddListItemFrame(self.item_frame_related_container, self)
         self.item_empty_frame = EmptyFrame(self.item_frame_related_container, self)
 
-        self.create_item_button = tk.Button(self, command=self.on_create_item_btn_click, text='CREATE')
+        self.create_item_button = ctk.CTkButton(self, command=self.on_create_item_btn_click, text='CREATE')
 
-        self.logout_button = tk.Button(self, command=self.on_logout_btn_click, text='LOGOUT')
+        self.logout_button = ctk.CTkButton(self, command=self.on_logout_btn_click, text='LOGOUT')
 
-        self.cred_listbox_scrollbar = tk.Scrollbar(self)
+        self.cred_listbox_scrollbar = ctk.CTkScrollbar(self)
         self.cred_listbox = tk.Listbox(self, bg='red', yscrollcommand=self.cred_listbox_scrollbar.set,
                                        selectmode=tk.SINGLE)
         self.cred_listbox_scrollbar.configure(command=self.cred_listbox.yview)
@@ -152,19 +152,19 @@ class AddListItemFrame(StandardFrame):
     def __init__(self, parent, controller):
         super().__init__(parent, controller)
 
-        self.str_var_cred_login = tk.StringVar()
-        self.str_var_cred_password = tk.StringVar()
-        self.str_var_cred_name = tk.StringVar()
+        self.str_var_cred_login = ctk.StringVar()
+        self.str_var_cred_password = ctk.StringVar()
+        self.str_var_cred_name = ctk.StringVar()
 
-        self.cred_login_label = tk.Label(self, text='Login')
-        self.cred_password_label = tk.Label(self, text='Password')
-        self.cred_name_label = tk.Label(self, text='Name')
+        self.cred_login_label = ctk.CTkLabel(self, text='Login')
+        self.cred_password_label = ctk.CTkLabel(self, text='Password')
+        self.cred_name_label = ctk.CTkLabel(self, text='Name')
 
-        self.cred_login_entry = tk.Entry(self, textvariable=self.str_var_cred_login)
-        self.cred_password_entry = tk.Entry(self, textvariable=self.str_var_cred_password)
-        self.cred_name_entry = tk.Entry(self, textvariable=self.str_var_cred_name)
+        self.cred_login_entry = ctk.CTkEntry(self, textvariable=self.str_var_cred_login)
+        self.cred_password_entry = ctk.CTkEntry(self, textvariable=self.str_var_cred_password)
+        self.cred_name_entry = ctk.CTkEntry(self, textvariable=self.str_var_cred_name)
 
-        self.save_cred_button = tk.Button(self, text='SAVE', command=self.on_save_btn_click)
+        self.save_cred_button = ctk.CTkButton(self, text='SAVE', command=self.on_save_btn_click)
 
         self.fill_window_layout()
 
@@ -175,7 +175,6 @@ class AddListItemFrame(StandardFrame):
 
         if not self.check_that_item_unique(user, name, login, password):
             print(user, name, login, password)
-            tk.messagebox.showinfo('Error', 'Item already exists')
             return False
 
         return True
@@ -213,15 +212,15 @@ class EditCredItemFrame(StandardFrame):
         super().__init__(parent, controller)
         self.item_id = 0
 
-        self.cred_name_sv = tk.StringVar()
-        self.cred_login_sv = tk.StringVar()
-        self.cred_password_sv = tk.StringVar()
+        self.cred_name_sv = ctk.StringVar()
+        self.cred_login_sv = ctk.StringVar()
+        self.cred_password_sv = ctk.StringVar()
 
-        self.cred_name_entry = tk.Entry(self, textvariable=self.cred_name_sv)
-        self.cred_login_entry = tk.Entry(self, textvariable=self.cred_login_sv)
-        self.cred_password_entry = tk.Entry(self, textvariable=self.cred_password_sv)
+        self.cred_name_entry = ctk.CTkEntry(self, textvariable=self.cred_name_sv)
+        self.cred_login_entry = ctk.CTkEntry(self, textvariable=self.cred_login_sv)
+        self.cred_password_entry = ctk.CTkEntry(self, textvariable=self.cred_password_sv)
 
-        self.save_changes_button = tk.Button(self, text='SAVE', command=self.on_save_btn_click)
+        self.save_changes_button = ctk.CTkButton(self, text='SAVE', command=self.on_save_btn_click)
 
         self.fill_window_layout()
 

@@ -3,17 +3,21 @@ from cred_item import CredItem
 from user_related_frames import *
 
 
-class AppWindow(tk.Tk):
+class AppWindow(ctk.CTk):
     def __init__(self, db_manager):
         super().__init__()
         self.db_manager = db_manager
         self.app_state = {'cur_user': None}
 
-        self.geometry('480x640')
+        self.state('zoom')
+        self.resizable(True, True)
 
-        self.frame_container = tk.Frame(self)
+        self.frame_container = ctk.CTkFrame(self)
 
         self.frame_container.pack(fill='both', expand=True)
+
+        self.grid_rowconfigure(0, weight=1)
+        self.grid_columnconfigure(0, weight=1)
 
         self.frames_list = []
 

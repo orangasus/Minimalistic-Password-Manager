@@ -1,4 +1,4 @@
-import tkinter as tk
+import customtkinter as ctk
 
 from standard_frame import StandardFrame
 from entry_with_placeholder import EntryWithPlaceholder
@@ -9,21 +9,28 @@ class LoginIntoAppFrame(StandardFrame):
     def __init__(self, parent, controller):
         super().__init__(parent, controller)
 
-        self.str_var_user_login = tk.StringVar()
-        self.str_var_user_password = tk.StringVar()
+        self.str_var_user_login = ctk.StringVar()
+        self.str_var_user_password = ctk.StringVar()
 
         self.login_entry = EntryWithPlaceholder(self, self.str_var_user_login, 'Username')
         self.password_entry = EntryWithPlaceholder(self, self.str_var_user_password, 'Password')
 
         self.error_frame = ErrorFrame(self, self, 'Error', 'Wrong credentials', 5000)
 
-        self.login_button = tk.Button(self, command=self.on_login_btn_click, text='LOGIN')
-        self.create_user_button = tk.Button(self, command=self.on_create_user_btn_click, text='CREATE')
+        self.login_button = ctk.CTkButton(self, command=self.on_login_btn_click, text='LOGIN')
+        self.create_user_button = ctk.CTkButton(self, command=self.on_create_user_btn_click, text='CREATE')
 
+        self.setup_grid()
         self.fill_window_layout()
 
     def on_create_user_btn_click(self):
         self.controller.show_frame(self.controller.create_user_frame)
+
+    def setup_grid(self):
+        for i in range(3):
+            self.grid_rowconfigure(i, weight=1)
+        for i in range(2):
+            self.grid_columnconfigure(i, weight=1)
 
     def fill_window_layout(self):
         self.login_entry.grid(row=0, column=0, columnspan=2)
@@ -52,20 +59,20 @@ class CreateUserFrame(StandardFrame):
     def __init__(self, parent, controller):
         super().__init__(parent, controller)
 
-        self.str_var_user_login = tk.StringVar()
-        self.str_var_user_password = tk.StringVar()
+        self.str_var_user_login = ctk.StringVar()
+        self.str_var_user_password = ctk.StringVar()
 
-        self.login_entry = tk.Entry(self, textvariable=self.str_var_user_login)
-        self.password_entry = tk.Entry(self, textvariable=self.str_var_user_password)
+        self.login_entry = ctk.CTkEntry(self, textvariable=self.str_var_user_login)
+        self.password_entry = ctk.CTkEntry(self, textvariable=self.str_var_user_password)
 
-        self.create_button = tk.Button(self, command=self.on_create_btn_click, text='CREATE')
+        self.create_button = ctk.CTkButton(self, command=self.on_create_btn_click, text='CREATE')
 
         self.fill_window_layout()
 
     def fill_window_layout(self):
-        self.login_entry.pack()
-        self.password_entry.pack()
-        self.create_button.pack()
+        self.login_entry.grid(row=0, column=0)
+        self.password_entry.grid(row=1, column=0)
+        self.create_button.grid(row=2, column=0)
 
     def on_create_btn_click(self):
         login = self.str_var_user_login.get()

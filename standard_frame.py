@@ -1,7 +1,8 @@
 import tkinter as tk
+import customtkinter as ctk
 
 
-class StandardFrame(tk.Frame):
+class StandardFrame(ctk.CTkFrame):
     def __init__(self, parent, controller):
         super().__init__(parent)
         self.controller = controller
