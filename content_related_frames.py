@@ -4,6 +4,8 @@ import customtkinter as ctk
 import pyperclip as pclip
 
 from standard_frame import StandardFrame
+from ctk_list_view_item import CtkListViewItem
+from ctk_list_view import CtkListView
 
 
 class ItemInfoFrame(StandardFrame):
@@ -93,14 +95,19 @@ class UserContentFrame(StandardFrame):
 
         self.logout_button = ctk.CTkButton(self, command=self.on_logout_btn_click, text='LOGOUT')
 
-        self.cred_listbox_scrollbar = ctk.CTkScrollbar(self)
-        self.cred_listbox = tk.Listbox(self, bg='red', yscrollcommand=self.cred_listbox_scrollbar.set,
-                                       selectmode=tk.SINGLE)
-        self.cred_listbox_scrollbar.configure(command=self.cred_listbox.yview)
-        self.cred_listbox.bind('<<ListboxSelect>>', self.on_items_list_click)
+        self.cred_item_list_frame = []
+        self.fill_list_item_frames()
+        self.cred_listbox = CtkListView(self, self.cred_item_list_frame)
 
         self.fill_window_layout()
         self.show_item_related_frame(self.item_empty_frame)
+
+    def fill_list_item_frames(self):
+        i = len(self.cred_item_list_frame)
+        for j in range(i):
+            self.cred_item_list_frame.pop()
+        for el in self.controller.user_items_list:
+            self.cred_item_list_frame.append(CtkListViewItem(self.cred_listbox, self, el))
 
     def on_logout_btn_click(self):
         self.controller.user_items_list = []
@@ -111,31 +118,15 @@ class UserContentFrame(StandardFrame):
         frame.tkraise()
 
     def clear_items_listbox(self):
-        self.cred_listbox.delete(0, self.cred_listbox.size() - 1)
-
-    def on_items_list_click(self, event):
-        try:
-            self.user_content_state['cur_item_ind'] = self.cred_listbox.curselection()[0]
-        except IndexError:
-            self.user_content_state['cur_item_ind'] = None
-
-        if self.user_content_state['cur_item_ind'] is not None:
-            selected_item = self.controller.user_items_list[self.user_content_state['cur_item_ind']]
-            self.item_info_frame.update_labels_info(selected_item.cred_name,
-                                                    selected_item.cred_login,
-                                                    selected_item.cred_pwd)
-            self.show_item_related_frame(self.item_info_frame)
+        self.cred_listbox.delete_all_items_from_list_view()
 
     def upload_items_to_listbox(self):
-        self.clear_items_listbox()
-        for i, cred_item in enumerate(self.controller.user_items_list):
-            listbox_item_name = f'{cred_item.cred_name} - {cred_item.cred_login}'
-            self.cred_listbox.insert(i, listbox_item_name)
+        self.fill_list_item_frames()
+        self.cred_listbox.upload_all_items_to_list_view()
 
     def fill_window_layout(self):
         self.item_frame_related_container.grid(row=0, column=2, sticky='news')
         self.cred_listbox.grid(row=0, column=0, rowspan=2)
-        self.cred_listbox_scrollbar.grid(row=0, column=1, rowspan=2, sticky='ns')
         self.create_item_button.grid(row=2, column=0)
         self.logout_button.grid(row=0, column=3, sticky='ne')
 
