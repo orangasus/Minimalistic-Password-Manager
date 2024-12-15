@@ -53,12 +53,12 @@ class ItemInfoFrame(StandardFrame):
         self.controller.show_item_related_frame(self.controller.item_empty_frame)
 
     def fill_window_layout(self):
-        self.cred_name_head_label.grid(row=0, column=0, columnspan=2)
+        self.cred_name_head_label.grid(row=0, column=0, columnspan=2, sticky='w')
         self.cred_name_label.grid(row=1, column=0, columnspan=2)
-        self.cred_login_head_label.grid(row=2, column=0, columnspan=2)
+        self.cred_login_head_label.grid(row=2, column=0, columnspan=2, sticky='w')
         self.cred_login_label.grid(row=3, column=0, columnspan=2)
         self.copy_login_button.grid(row=3, column=2)
-        self.cred_password_head_label.grid(row=4, column=0, columnspan=2)
+        self.cred_password_head_label.grid(row=4, column=0, columnspan=2, sticky='w')
         self.cred_password_label.grid(row=5, column=0, columnspan=2)
         self.copy_pswd_button.grid(row=5, column=2)
         self.edit_item_button.grid(row=6, column=0)
