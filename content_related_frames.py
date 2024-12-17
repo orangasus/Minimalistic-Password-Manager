@@ -23,11 +23,11 @@ class ItemInfoFrame(StandardFrame):
         self.cred_login_label = ctk.CTkLabel(self, textvariable=self.cred_login_sv, font=app_style.FONT_PRESET_MAIN)
         self.cred_password_label = ctk.CTkLabel(self, textvariable=self.cred_password_sv, font=app_style.FONT_PRESET_MAIN)
 
-        self.delete_item_button = ctk.CTkButton(self, command=self.on_delete_btn_click, text='DELETE', width=app_style.BUTTON_WIDTH, font=app_style.FONT_PRESET_MAIN)
-        self.edit_item_button = ctk.CTkButton(self, command=self.on_edit_btn_click, text='EDIT', width=app_style.BUTTON_WIDTH, font=app_style.FONT_PRESET_MAIN)
+        self.delete_item_button = ctk.CTkButton(self, command=self.on_delete_btn_click, text='DELETE', width=app_style.BUTTON_WIDTH, font=app_style.FONT_PRESET_MAIN, fg_color=app_style.ACCENT_COLOR)
+        self.edit_item_button = ctk.CTkButton(self, command=self.on_edit_btn_click, text='EDIT', width=app_style.BUTTON_WIDTH, font=app_style.FONT_PRESET_MAIN, fg_color=app_style.ACCENT_COLOR)
 
-        self.copy_login_button = ctk.CTkButton(self, command=self.on_copy_login_btn_click, text='COPY', width=app_style.BUTTON_WIDTH, font=app_style.FONT_PRESET_MAIN)
-        self.copy_pswd_button = ctk.CTkButton(self, command=self.on_copy_pswd_btn_click, text='COPY', width=app_style.BUTTON_WIDTH, font=app_style.FONT_PRESET_MAIN)
+        self.copy_login_button = ctk.CTkButton(self, command=self.on_copy_login_btn_click, text='COPY', width=app_style.BUTTON_WIDTH, font=app_style.FONT_PRESET_MAIN, fg_color=app_style.ACCENT_COLOR)
+        self.copy_pswd_button = ctk.CTkButton(self, command=self.on_copy_pswd_btn_click, text='COPY', width=app_style.BUTTON_WIDTH, font=app_style.FONT_PRESET_MAIN, fg_color=app_style.ACCENT_COLOR)
 
         self.fill_window_layout()
 
@@ -90,9 +90,9 @@ class UserContentFrame(StandardFrame):
         self.item_create_frame = AddListItemFrame(self.item_frame_related_container, self)
         self.item_empty_frame = EmptyFrame(self.item_frame_related_container, self)
 
-        self.create_item_button = ctk.CTkButton(self, command=self.on_create_item_btn_click, text='CREATE', width=app_style.BUTTON_WIDTH, font=app_style.FONT_PRESET_MAIN)
+        self.create_item_button = ctk.CTkButton(self, command=self.on_create_item_btn_click, text='CREATE', width=app_style.BUTTON_WIDTH, font=app_style.FONT_PRESET_MAIN, fg_color=app_style.ACCENT_COLOR)
 
-        self.logout_button = ctk.CTkButton(self, command=self.on_logout_btn_click, text='LOGOUT', width=app_style.BUTTON_WIDTH, font=app_style.FONT_PRESET_MAIN)
+        self.logout_button = ctk.CTkButton(self, command=self.on_logout_btn_click, text='LOGOUT', width=app_style.BUTTON_WIDTH, font=app_style.FONT_PRESET_MAIN, fg_color=app_style.ACCENT_COLOR)
 
         self.cred_item_list_frame = []
         self.fill_list_item_frames()
@@ -154,7 +154,7 @@ class AddListItemFrame(StandardFrame):
         self.cred_password_entry = ctk.CTkEntry(self, textvariable=self.str_var_cred_password, font=app_style.FONT_PRESET_MAIN)
         self.cred_name_entry = ctk.CTkEntry(self, textvariable=self.str_var_cred_name, font=app_style.FONT_PRESET_MAIN)
 
-        self.save_cred_button = ctk.CTkButton(self, text='SAVE', command=self.on_save_btn_click, width=app_style.BUTTON_WIDTH, font=app_style.FONT_PRESET_MAIN)
+        self.save_cred_button = ctk.CTkButton(self, text='SAVE', command=self.on_save_btn_click, width=app_style.BUTTON_WIDTH, font=app_style.FONT_PRESET_MAIN, fg_color=app_style.ACCENT_COLOR)
 
         self.fill_window_layout()
 
@@ -209,7 +209,7 @@ class EditCredItemFrame(StandardFrame):
         self.cred_login_entry = ctk.CTkEntry(self, textvariable=self.cred_login_sv, font=app_style.FONT_PRESET_MAIN)
         self.cred_password_entry = ctk.CTkEntry(self, textvariable=self.cred_password_sv, font=app_style.FONT_PRESET_MAIN)
 
-        self.save_changes_button = ctk.CTkButton(self, text='SAVE', command=self.on_save_btn_click, width=app_style.BUTTON_WIDTH, font=app_style.FONT_PRESET_MAIN)
+        self.save_changes_button = ctk.CTkButton(self, text='SAVE', command=self.on_save_btn_click, width=app_style.BUTTON_WIDTH, font=app_style.FONT_PRESET_MAIN, fg_color=app_style.ACCENT_COLOR)
 
         self.fill_window_layout()
 

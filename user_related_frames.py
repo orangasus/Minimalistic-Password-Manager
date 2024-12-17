@@ -1,9 +1,9 @@
 import customtkinter as ctk
 
-from standard_frame import StandardFrame
+import app_styling as app_style
 from entry_with_placeholder import EntryWithPlaceholder
 from error_frame import ErrorFrame
-import app_styling as app_style
+from standard_frame import StandardFrame
 
 
 class LoginIntoAppFrame(StandardFrame):
@@ -16,10 +16,12 @@ class LoginIntoAppFrame(StandardFrame):
         self.login_entry = EntryWithPlaceholder(self, self.str_var_user_login, 'Username')
         self.password_entry = EntryWithPlaceholder(self, self.str_var_user_password, 'Password')
 
-        self.error_frame = ErrorFrame(self, self, 'Error', 'Wrong credentials', 5000)
+        self.error_frame = ErrorFrame(self, 'Error', 'Wrong credentials', 5000)
 
-        self.login_button = ctk.CTkButton(self, command=self.on_login_btn_click, text='LOGIN', width=app_style.BUTTON_WIDTH, font=app_style.FONT_PRESET_MAIN)
-        self.create_user_button = ctk.CTkButton(self, command=self.on_create_user_btn_click, text='CREATE', width=app_style.BUTTON_WIDTH, font=app_style.FONT_PRESET_MAIN)
+        self.login_button = ctk.CTkButton(self, command=self.on_login_btn_click, text='LOGIN',
+                                          width=app_style.BUTTON_WIDTH, font=app_style.FONT_PRESET_SMALL, fg_color=app_style.ACCENT_COLOR)
+        self.create_user_button = ctk.CTkButton(self, command=self.on_create_user_btn_click, text='CREATE',
+                                                width=app_style.BUTTON_WIDTH, font=app_style.FONT_PRESET_SMALL, fg_color=app_style.ACCENT_COLOR)
 
         self.setup_grid()
         self.fill_window_layout()
@@ -28,16 +30,17 @@ class LoginIntoAppFrame(StandardFrame):
         self.controller.show_frame(self.controller.create_user_frame)
 
     def setup_grid(self):
-        for i in range(3):
-            self.grid_rowconfigure(i, weight=1)
+        self.grid_rowconfigure(0, weight=1)
+        self.grid_rowconfigure(2, weight=0)
+        self.grid_rowconfigure(4, weight=1)
         for i in range(2):
             self.grid_columnconfigure(i, weight=1)
 
     def fill_window_layout(self):
-        self.login_entry.grid(row=0, column=0, columnspan=2)
-        self.password_entry.grid(row=1, column=0, columnspan=2)
-        self.login_button.grid(row=2, column=0, sticky='e')
-        self.create_user_button.grid(row=2, column=1, sticky='w')
+        self.login_entry.grid(row=1, column=0, columnspan=2, sticky='s')
+        self.password_entry.grid(row=2, column=0, columnspan=2, sticky='n')
+        self.login_button.grid(row=3, column=0, sticky='ne', pady=10, padx=20)
+        self.create_user_button.grid(row=3, column=1, sticky='nw', pady=10, padx=20)
 
     def on_login_btn_click(self):
         login = self.str_var_user_login.get()
@@ -64,9 +67,11 @@ class CreateUserFrame(StandardFrame):
         self.str_var_user_password = ctk.StringVar()
 
         self.login_entry = ctk.CTkEntry(self, textvariable=self.str_var_user_login, font=app_style.FONT_PRESET_MAIN)
-        self.password_entry = ctk.CTkEntry(self, textvariable=self.str_var_user_password, font=app_style.FONT_PRESET_MAIN)
+        self.password_entry = ctk.CTkEntry(self, textvariable=self.str_var_user_password,
+                                           font=app_style.FONT_PRESET_MAIN)
 
-        self.create_button = ctk.CTkButton(self, command=self.on_create_btn_click, text='CREATE', width=app_style.BUTTON_WIDTH, font=app_style.FONT_PRESET_MAIN)
+        self.create_button = ctk.CTkButton(self, command=self.on_create_btn_click, text='CREATE',
+                                           width=app_style.BUTTON_WIDTH, font=app_style.FONT_PRESET_SMALL)
 
         self.fill_window_layout()
 

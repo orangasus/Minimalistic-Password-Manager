@@ -1,31 +1,29 @@
-import tkinter as tk
+import customtkinter as ctk
+
+import app_styling as app_style
 
 
-class ErrorFrame(tk.Frame):
-    def __init__(self, parent, controller, title, msg, time_to_show):
-        super().__init__(parent)
-
-        self.controller = controller
-
-        self.configure(width='50px', height='20px', bg='red')
+class ErrorFrame(ctk.CTkFrame):
+    def __init__(self, parent, title, msg, time_to_show):
+        super().__init__(parent, fg_color=app_style.ACCENT_COLOR)
 
         self.title = title
         self.msg = msg
         self.time_to_show = time_to_show
 
-        self.title_label = tk.Label(self, text = self.title,bg='red', fg='white')
-        self.msg_label = tk.Label(self, text=self.msg, bg='red', fg='white')
-
-        self.fill_frame_layout()
+        # self.title_label = ctk.CTkLabel(self, text=self.title, text_color='white',
+        #                                 font=app_style.FONT_PRESET_MAIN)
+        self.msg_label = ctk.CTkLabel(self, text=self.msg, text_color='white',
+                                      font=app_style.FONT_PRESET_MAIN)
 
     def fill_frame_layout(self):
-        self.title_label.pack()
-        self.msg_label.pack()
+        # self.title_label.pack(padx=5, pady=5, side=ctk.LEFT)
+        self.msg_label.pack(padx=5, pady=5, side=ctk.LEFT)
 
     def show_error_frame(self):
-        self.grid(row=0, column=3, sticky='ne')
-        self.tkraise()
-        self.after(self.time_to_show, self.hide_error_frame)
+        self.place(anchor='ne', relx=1, rely=0, x=-10, y=10)
+        self.fill_frame_layout()
+        self.after(ms=self.time_to_show, func=self.hide_error_frame)
 
     def hide_error_frame(self):
-        self.grid_forget()
+        self.place_forget()
