@@ -1,19 +1,21 @@
 import customtkinter as ctk
+import app_styling as app_style
 
 
 class CtkListViewItem(ctk.CTkFrame):
-    hover_color = 'light grey'
+    hover_color = app_style.HOVER_HIGHLIGHT_COLOR
     stand_color = 'transparent'
-    indicator_color = 'blue'
+    indicator_color = app_style.ACCENT_COLOR
 
-    def __init__(self, parent, controller, cred_item_obj):
+    def __init__(self, parent, controller, cred_item_obj, item_ind):
         super().__init__(parent)
         self.parent = parent
         self.cred_item_obj = cred_item_obj
         self.controller = controller
+        self.item_ind = item_ind
 
-        self.cred_name_label = ctk.CTkLabel(self, text=cred_item_obj.cred_name)
-        self.cred_login_label = ctk.CTkLabel(self, text=cred_item_obj.cred_login)
+        self.cred_name_label = ctk.CTkLabel(self, text=cred_item_obj.cred_name, font=app_style.FONT_PRESET_MAIN)
+        self.cred_login_label = ctk.CTkLabel(self, text=cred_item_obj.cred_login, font=app_style.FONT_PRESET_SMALL)
         self.select_indicator_frame = ctk.CTkFrame(self, fg_color=self.stand_color, width=5, height=0)
 
         self.bind('<Button-1>', self.on_click)
@@ -38,7 +40,7 @@ class CtkListViewItem(ctk.CTkFrame):
         self.select_indicator_frame.grid(row=0, rowspan = 2, column=0, padx=0, pady=1, sticky='ns')
 
     def on_click(self, event):
-        self.controller.user_content_state['cur_user_ind'] =
+        self.controller.user_content_state['cur_item_ind'] = self.item_ind
         selected_item = self.cred_item_obj
         if self.parent.cur_selected_item_frame is not None:
             self.parent.cur_selected_item_frame.change_select_indicator_color_to_stand()

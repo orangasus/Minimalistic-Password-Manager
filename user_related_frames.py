@@ -3,6 +3,7 @@ import customtkinter as ctk
 from standard_frame import StandardFrame
 from entry_with_placeholder import EntryWithPlaceholder
 from error_frame import ErrorFrame
+import app_styling as app_style
 
 
 class LoginIntoAppFrame(StandardFrame):
@@ -17,8 +18,8 @@ class LoginIntoAppFrame(StandardFrame):
 
         self.error_frame = ErrorFrame(self, self, 'Error', 'Wrong credentials', 5000)
 
-        self.login_button = ctk.CTkButton(self, command=self.on_login_btn_click, text='LOGIN')
-        self.create_user_button = ctk.CTkButton(self, command=self.on_create_user_btn_click, text='CREATE')
+        self.login_button = ctk.CTkButton(self, command=self.on_login_btn_click, text='LOGIN', width=app_style.BUTTON_WIDTH, font=app_style.FONT_PRESET_MAIN)
+        self.create_user_button = ctk.CTkButton(self, command=self.on_create_user_btn_click, text='CREATE', width=app_style.BUTTON_WIDTH, font=app_style.FONT_PRESET_MAIN)
 
         self.setup_grid()
         self.fill_window_layout()
@@ -35,8 +36,8 @@ class LoginIntoAppFrame(StandardFrame):
     def fill_window_layout(self):
         self.login_entry.grid(row=0, column=0, columnspan=2)
         self.password_entry.grid(row=1, column=0, columnspan=2)
-        self.login_button.grid(row=2, column=0)
-        self.create_user_button.grid(row=2, column=1)
+        self.login_button.grid(row=2, column=0, sticky='e')
+        self.create_user_button.grid(row=2, column=1, sticky='w')
 
     def on_login_btn_click(self):
         login = self.str_var_user_login.get()
@@ -62,10 +63,10 @@ class CreateUserFrame(StandardFrame):
         self.str_var_user_login = ctk.StringVar()
         self.str_var_user_password = ctk.StringVar()
 
-        self.login_entry = ctk.CTkEntry(self, textvariable=self.str_var_user_login)
-        self.password_entry = ctk.CTkEntry(self, textvariable=self.str_var_user_password)
+        self.login_entry = ctk.CTkEntry(self, textvariable=self.str_var_user_login, font=app_style.FONT_PRESET_MAIN)
+        self.password_entry = ctk.CTkEntry(self, textvariable=self.str_var_user_password, font=app_style.FONT_PRESET_MAIN)
 
-        self.create_button = ctk.CTkButton(self, command=self.on_create_btn_click, text='CREATE')
+        self.create_button = ctk.CTkButton(self, command=self.on_create_btn_click, text='CREATE', width=app_style.BUTTON_WIDTH, font=app_style.FONT_PRESET_MAIN)
 
         self.fill_window_layout()
 
