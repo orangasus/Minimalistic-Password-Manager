@@ -1,33 +1,49 @@
 import customtkinter as ctk
 import pyperclip as pclip
 
+import app_styling as app_style
 from ctk_list_view import CtkListView
 from ctk_list_view_item import CtkListViewItem
 from standard_frame import StandardFrame
-import app_styling as app_style
 
 
 class ItemInfoFrame(StandardFrame):
     def __init__(self, parent, controller):
         super().__init__(parent, controller)
 
+        self.configure(fg_color='white')
+
         self.cred_name_sv = ctk.StringVar()
         self.cred_login_sv = ctk.StringVar()
         self.cred_password_sv = ctk.StringVar()
+
+        label_width = 150
 
         self.cred_login_head_label = ctk.CTkLabel(self, text='Login', font=app_style.FONT_PRESET_SMALL)
         self.cred_password_head_label = ctk.CTkLabel(self, text='Password', font=app_style.FONT_PRESET_SMALL)
         self.cred_name_head_label = ctk.CTkLabel(self, text='Name', font=app_style.FONT_PRESET_SMALL)
 
-        self.cred_name_label = ctk.CTkLabel(self, textvariable=self.cred_name_sv, font=app_style.FONT_PRESET_MAIN)
-        self.cred_login_label = ctk.CTkLabel(self, textvariable=self.cred_login_sv, font=app_style.FONT_PRESET_MAIN)
-        self.cred_password_label = ctk.CTkLabel(self, textvariable=self.cred_password_sv, font=app_style.FONT_PRESET_MAIN)
+        self.cred_name_label = ctk.CTkLabel(self, textvariable=self.cred_name_sv, font=app_style.FONT_PRESET_MAIN,
+                                            width=label_width, anchor='w', justify='left')
+        self.cred_login_label = ctk.CTkLabel(self, textvariable=self.cred_login_sv, font=app_style.FONT_PRESET_MAIN,
+                                             width=label_width, anchor='w', justify='left')
+        self.cred_password_label = ctk.CTkLabel(self, textvariable=self.cred_password_sv,
+                                                font=app_style.FONT_PRESET_MAIN, width=label_width, anchor='w',
+                                                justify='left')
 
-        self.delete_item_button = ctk.CTkButton(self, command=self.on_delete_btn_click, text='DELETE', width=app_style.BUTTON_WIDTH, font=app_style.FONT_PRESET_MAIN, fg_color=app_style.ACCENT_COLOR)
-        self.edit_item_button = ctk.CTkButton(self, command=self.on_edit_btn_click, text='EDIT', width=app_style.BUTTON_WIDTH, font=app_style.FONT_PRESET_MAIN, fg_color=app_style.ACCENT_COLOR)
+        self.delete_item_button = ctk.CTkButton(self, command=self.on_delete_btn_click, text='DELETE',
+                                                width=app_style.BUTTON_WIDTH, font=app_style.FONT_PRESET_SMALL,
+                                                fg_color=app_style.ACCENT_COLOR)
+        self.edit_item_button = ctk.CTkButton(self, command=self.on_edit_btn_click, text='EDIT',
+                                              width=app_style.BUTTON_WIDTH, font=app_style.FONT_PRESET_SMALL,
+                                              fg_color=app_style.ACCENT_COLOR)
 
-        self.copy_login_button = ctk.CTkButton(self, command=self.on_copy_login_btn_click, text='COPY', width=app_style.BUTTON_WIDTH, font=app_style.FONT_PRESET_MAIN, fg_color=app_style.ACCENT_COLOR)
-        self.copy_pswd_button = ctk.CTkButton(self, command=self.on_copy_pswd_btn_click, text='COPY', width=app_style.BUTTON_WIDTH, font=app_style.FONT_PRESET_MAIN, fg_color=app_style.ACCENT_COLOR)
+        self.copy_login_button = ctk.CTkButton(self, command=self.on_copy_login_btn_click, text='COPY',
+                                               width=app_style.BUTTON_WIDTH, font=app_style.FONT_PRESET_SMALL,
+                                               fg_color=app_style.ACCENT_COLOR)
+        self.copy_pswd_button = ctk.CTkButton(self, command=self.on_copy_pswd_btn_click, text='COPY',
+                                              width=app_style.BUTTON_WIDTH, font=app_style.FONT_PRESET_SMALL,
+                                              fg_color=app_style.ACCENT_COLOR)
 
         self.fill_window_layout()
 
@@ -51,17 +67,21 @@ class ItemInfoFrame(StandardFrame):
         self.controller.upload_items_to_listbox()
         self.controller.show_item_related_frame(self.controller.item_empty_frame)
 
+    def config_grid(self):
+        self.grid_columnconfigure(0, weight=1)
+        self.grid_columnconfigure(1, weight=1)
+
     def fill_window_layout(self):
-        self.cred_name_head_label.grid(row=0, column=0, columnspan=2, sticky='w')
-        self.cred_name_label.grid(row=1, column=0, columnspan=2, sticky='w')
-        self.cred_login_head_label.grid(row=2, column=0, columnspan=2, sticky='w')
-        self.cred_login_label.grid(row=3, column=0, columnspan=2, sticky='w')
-        self.copy_login_button.grid(row=3, column=2)
-        self.cred_password_head_label.grid(row=4, column=0, columnspan=2, sticky='w')
-        self.cred_password_label.grid(row=5, column=0, columnspan=2, sticky='w')
-        self.copy_pswd_button.grid(row=5, column=2)
-        self.edit_item_button.grid(row=6, column=0)
-        self.delete_item_button.grid(row=6, column=2)
+        self.cred_name_head_label.grid(row=0, column=0, sticky='w', padx=10)
+        self.cred_name_label.grid(row=1, column=0, sticky='w', padx=10)
+        self.cred_login_head_label.grid(row=2, column=0, sticky='w', padx=10)
+        self.cred_login_label.grid(row=3, column=0, sticky='w', padx=10)
+        self.copy_login_button.grid(row=3, column=1, sticky='e')
+        self.cred_password_head_label.grid(row=4, column=0, sticky='w', padx=10)
+        self.cred_password_label.grid(row=5, column=0, sticky='w', padx=10)
+        self.copy_pswd_button.grid(row=5, column=1, sticky='e')
+        self.edit_item_button.grid(row=6, column=0, pady=5)
+        self.delete_item_button.grid(row=6, column=1, sticky='e')
 
     def update_labels_info(self, name, login, password):
         self.cred_name_sv.set(name)
@@ -74,7 +94,9 @@ class EmptyFrame(StandardFrame):
         super().__init__(parent, controller)
 
         self.label = ctk.CTkLabel(self, text='Nothing Selected', font=app_style.FONT_PRESET_MAIN)
-        self.label.pack()
+        self.grid_rowconfigure(0, weight=1)
+        self.grid_columnconfigure(0, weight=1)
+        self.label.grid(row=0, column=0, sticky='news', padx=10, pady=10)
 
 
 class UserContentFrame(StandardFrame):
@@ -83,16 +105,22 @@ class UserContentFrame(StandardFrame):
 
         self.user_content_state = {'cur_item_ind': None}
 
-        self.item_frame_related_container = ctk.CTkFrame(self)
+        self.configure(fg_color=app_style.BACKGROUND_GREY_COLOR)
+
+        self.item_frame_related_container = ctk.CTkFrame(self, fg_color='transparent')
 
         self.item_info_frame = ItemInfoFrame(self.item_frame_related_container, self)
         self.item_edit_frame = EditCredItemFrame(self.item_frame_related_container, self)
         self.item_create_frame = AddListItemFrame(self.item_frame_related_container, self)
         self.item_empty_frame = EmptyFrame(self.item_frame_related_container, self)
 
-        self.create_item_button = ctk.CTkButton(self, command=self.on_create_item_btn_click, text='CREATE', width=app_style.BUTTON_WIDTH, font=app_style.FONT_PRESET_MAIN, fg_color=app_style.ACCENT_COLOR)
+        self.create_item_button = ctk.CTkButton(self, command=self.on_create_item_btn_click, text='CREATE',
+                                                width=app_style.BUTTON_WIDTH, font=app_style.FONT_PRESET_SMALL,
+                                                fg_color=app_style.ACCENT_COLOR)
 
-        self.logout_button = ctk.CTkButton(self, command=self.on_logout_btn_click, text='LOGOUT', width=app_style.BUTTON_WIDTH, font=app_style.FONT_PRESET_MAIN, fg_color=app_style.ACCENT_COLOR)
+        self.logout_button = ctk.CTkButton(self, command=self.on_logout_btn_click, text='LOGOUT',
+                                           width=app_style.BUTTON_WIDTH, font=app_style.FONT_PRESET_SMALL,
+                                           fg_color=app_style.ACCENT_COLOR)
 
         self.cred_item_list_frame = []
         self.fill_list_item_frames()
@@ -124,10 +152,18 @@ class UserContentFrame(StandardFrame):
         self.cred_listbox.upload_all_items_to_list_view()
 
     def fill_window_layout(self):
-        self.item_frame_related_container.grid(row=0, column=2, sticky='news')
-        self.cred_listbox.grid(row=0, column=0, rowspan=2)
-        self.create_item_button.grid(row=2, column=0)
-        self.logout_button.grid(row=0, column=3, sticky='ne')
+        self.grid_columnconfigure(0, weight=1)
+        self.grid_columnconfigure(1, weight=1)
+
+        self.grid_rowconfigure(0, weight=1)
+
+        self.item_frame_related_container.grid_columnconfigure(0, weight=1)
+        self.item_frame_related_container.grid_rowconfigure(0, weight=1)
+
+        self.item_frame_related_container.grid(row=0, column=1, sticky='news', padx=10, pady=10)
+        self.cred_listbox.grid(row=0, column=0, rowspan=2, sticky='news', padx=10, pady=10)
+        self.create_item_button.grid(row=2, column=0, pady=10, sticky='n')
+        self.logout_button.grid(row=0, column=3, sticky='n', padx=10, pady=10)
 
         self.item_info_frame.grid(row=0, column=0, sticky='news')
         self.item_edit_frame.grid(row=0, column=0, sticky='news')
@@ -146,15 +182,22 @@ class AddListItemFrame(StandardFrame):
         self.str_var_cred_password = ctk.StringVar()
         self.str_var_cred_name = ctk.StringVar()
 
-        self.cred_login_label = ctk.CTkLabel(self, text='Login', font=app_style.FONT_PRESET_SMALL)
-        self.cred_password_label = ctk.CTkLabel(self, text='Password', font=app_style.FONT_PRESET_SMALL)
-        self.cred_name_label = ctk.CTkLabel(self, text='Name', font=app_style.FONT_PRESET_SMALL)
+        label_width = 150
 
-        self.cred_login_entry = ctk.CTkEntry(self, textvariable=self.str_var_cred_login, font=app_style.FONT_PRESET_MAIN)
-        self.cred_password_entry = ctk.CTkEntry(self, textvariable=self.str_var_cred_password, font=app_style.FONT_PRESET_MAIN)
+        self.cred_login_label = ctk.CTkLabel(self, text='Login', font=app_style.FONT_PRESET_SMALL, width=label_width, justify='left', anchor='w')
+        self.cred_password_label = ctk.CTkLabel(self, text='Password', font=app_style.FONT_PRESET_SMALL,
+                                                width=label_width, justify='left', anchor='w')
+        self.cred_name_label = ctk.CTkLabel(self, text='Name', font=app_style.FONT_PRESET_SMALL, width=label_width, justify='left', anchor='w')
+
+        self.cred_login_entry = ctk.CTkEntry(self, textvariable=self.str_var_cred_login,
+                                             font=app_style.FONT_PRESET_MAIN)
+        self.cred_password_entry = ctk.CTkEntry(self, textvariable=self.str_var_cred_password,
+                                                font=app_style.FONT_PRESET_MAIN)
         self.cred_name_entry = ctk.CTkEntry(self, textvariable=self.str_var_cred_name, font=app_style.FONT_PRESET_MAIN)
 
-        self.save_cred_button = ctk.CTkButton(self, text='SAVE', command=self.on_save_btn_click, width=app_style.BUTTON_WIDTH, font=app_style.FONT_PRESET_MAIN, fg_color=app_style.ACCENT_COLOR)
+        self.save_cred_button = ctk.CTkButton(self, text='SAVE', command=self.on_save_btn_click,
+                                              width=app_style.BUTTON_WIDTH, font=app_style.FONT_PRESET_SMALL,
+                                              fg_color=app_style.ACCENT_COLOR)
 
         self.fill_window_layout()
 
@@ -180,7 +223,7 @@ class AddListItemFrame(StandardFrame):
         self.cred_login_entry.pack()
         self.cred_password_label.pack()
         self.cred_password_entry.pack()
-        self.save_cred_button.pack()
+        self.save_cred_button.pack(pady=10)
 
     def on_save_btn_click(self):
         user = self.controller.controller.app_state['cur_user']
@@ -207,17 +250,20 @@ class EditCredItemFrame(StandardFrame):
 
         self.cred_name_entry = ctk.CTkEntry(self, textvariable=self.cred_name_sv, font=app_style.FONT_PRESET_MAIN)
         self.cred_login_entry = ctk.CTkEntry(self, textvariable=self.cred_login_sv, font=app_style.FONT_PRESET_MAIN)
-        self.cred_password_entry = ctk.CTkEntry(self, textvariable=self.cred_password_sv, font=app_style.FONT_PRESET_MAIN)
+        self.cred_password_entry = ctk.CTkEntry(self, textvariable=self.cred_password_sv,
+                                                font=app_style.FONT_PRESET_MAIN)
 
-        self.save_changes_button = ctk.CTkButton(self, text='SAVE', command=self.on_save_btn_click, width=app_style.BUTTON_WIDTH, font=app_style.FONT_PRESET_MAIN, fg_color=app_style.ACCENT_COLOR)
+        self.save_changes_button = ctk.CTkButton(self, text='SAVE', command=self.on_save_btn_click,
+                                                 width=app_style.BUTTON_WIDTH, font=app_style.FONT_PRESET_SMALL,
+                                                 fg_color=app_style.ACCENT_COLOR)
 
         self.fill_window_layout()
 
     def fill_window_layout(self):
-        self.cred_name_entry.pack()
-        self.cred_login_entry.pack()
-        self.cred_password_entry.pack()
-        self.save_changes_button.pack()
+        self.cred_name_entry.pack(pady=5)
+        self.cred_login_entry.pack(pady=5)
+        self.cred_password_entry.pack(pady=5)
+        self.save_changes_button.pack(pady=15)
 
     def set_item_id(self, id):
         self.item_id = id

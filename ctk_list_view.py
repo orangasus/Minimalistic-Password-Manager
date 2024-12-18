@@ -1,9 +1,11 @@
 import customtkinter as ctk
 
+import app_styling
+
 
 class CtkListView(ctk.CTkScrollableFrame):
     def __init__(self, parent, list_of_widget_items):
-        super().__init__(parent)
+        super().__init__(parent, fg_color='white', scrollbar_button_color=app_styling.BACKGROUND_GREY_COLOR)
         self.content_list = list_of_widget_items
         self.cur_selected_item_frame = None
 

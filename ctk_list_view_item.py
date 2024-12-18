@@ -8,7 +8,7 @@ class CtkListViewItem(ctk.CTkFrame):
     indicator_color = app_style.ACCENT_COLOR
 
     def __init__(self, parent, controller, cred_item_obj, item_ind):
-        super().__init__(parent)
+        super().__init__(parent, fg_color='white')
         self.parent = parent
         self.cred_item_obj = cred_item_obj
         self.controller = controller
@@ -29,8 +29,6 @@ class CtkListViewItem(ctk.CTkFrame):
         self.cred_login_label.bind('<Leave>', self.on_hover_leave)
         self.cred_name_label.bind('<Enter>', self.on_hover_enter)
         self.cred_name_label.bind('<Leave>', self.on_hover_leave)
-
-        self.configure(border_color='black', border_width=0)
 
         self.fill_grid_layout()
 

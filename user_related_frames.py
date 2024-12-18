@@ -10,6 +10,8 @@ class LoginIntoAppFrame(StandardFrame):
     def __init__(self, parent, controller):
         super().__init__(parent, controller)
 
+        self.configure(fg_color=app_style.BACKGROUND_GREY_COLOR)
+
         self.str_var_user_login = ctk.StringVar()
         self.str_var_user_password = ctk.StringVar()
 
@@ -63,22 +65,27 @@ class CreateUserFrame(StandardFrame):
     def __init__(self, parent, controller):
         super().__init__(parent, controller)
 
+        self.configure(fg_color=app_style.BACKGROUND_GREY_COLOR)
+
         self.str_var_user_login = ctk.StringVar()
         self.str_var_user_password = ctk.StringVar()
 
-        self.login_entry = ctk.CTkEntry(self, textvariable=self.str_var_user_login, font=app_style.FONT_PRESET_MAIN)
-        self.password_entry = ctk.CTkEntry(self, textvariable=self.str_var_user_password,
-                                           font=app_style.FONT_PRESET_MAIN)
+        self.login_entry = EntryWithPlaceholder(self, entry_str_var=self.str_var_user_login, pl_text='Login')
+        self.password_entry = EntryWithPlaceholder(self, entry_str_var=self.str_var_user_password, pl_text='Password')
 
         self.create_button = ctk.CTkButton(self, command=self.on_create_btn_click, text='CREATE',
-                                           width=app_style.BUTTON_WIDTH, font=app_style.FONT_PRESET_SMALL)
+                                           width=app_style.BUTTON_WIDTH, font=app_style.FONT_PRESET_SMALL,  fg_color=app_style.ACCENT_COLOR)
 
         self.fill_window_layout()
 
     def fill_window_layout(self):
-        self.login_entry.grid(row=0, column=0)
-        self.password_entry.grid(row=1, column=0)
-        self.create_button.grid(row=2, column=0)
+        self.grid_columnconfigure(0, weight=1)
+        self.grid_rowconfigure(0, weight=1)
+        self.grid_rowconfigure(4, weight=1)
+
+        self.login_entry.grid(row=1, column=0, pady=5)
+        self.password_entry.grid(row=2, column=0, pady=5)
+        self.create_button.grid(row=3, column=0, pady=10)
 
     def on_create_btn_click(self):
         login = self.str_var_user_login.get()
