@@ -1,3 +1,6 @@
+# This is a file with frames that are responsible
+# for displaying and modifying user's stored credentials
+
 import customtkinter as ctk
 import pyperclip as pclip
 
@@ -5,7 +8,6 @@ import app_styling as app_style
 from ctk_list_view import CtkListView
 from ctk_list_view_item import CtkListViewItem
 from standard_frame import StandardFrame
-import encryption_module
 
 
 class ItemInfoFrame(StandardFrame):
@@ -188,10 +190,12 @@ class AddListItemFrame(StandardFrame):
 
         label_width = 150
 
-        self.cred_login_label = ctk.CTkLabel(self, text='Login', font=app_style.FONT_PRESET_SMALL, width=label_width, justify='left', anchor='w')
+        self.cred_login_label = ctk.CTkLabel(self, text='Login', font=app_style.FONT_PRESET_SMALL, width=label_width,
+                                             justify='left', anchor='w')
         self.cred_password_label = ctk.CTkLabel(self, text='Password', font=app_style.FONT_PRESET_SMALL,
                                                 width=label_width, justify='left', anchor='w')
-        self.cred_name_label = ctk.CTkLabel(self, text='Name', font=app_style.FONT_PRESET_SMALL, width=label_width, justify='left', anchor='w')
+        self.cred_name_label = ctk.CTkLabel(self, text='Name', font=app_style.FONT_PRESET_SMALL, width=label_width,
+                                            justify='left', anchor='w')
 
         self.cred_login_entry = ctk.CTkEntry(self, textvariable=self.str_var_cred_login,
                                              font=app_style.FONT_PRESET_MAIN)
@@ -252,10 +256,13 @@ class EditCredItemFrame(StandardFrame):
         self.cred_login_sv = ctk.StringVar()
         self.cred_password_sv = ctk.StringVar()
 
-        self.cred_name_entry = ctk.CTkEntry(self, textvariable=self.cred_name_sv, font=app_style.FONT_PRESET_MAIN)
-        self.cred_login_entry = ctk.CTkEntry(self, textvariable=self.cred_login_sv, font=app_style.FONT_PRESET_MAIN)
+        self.cred_name_entry = ctk.CTkEntry(self, textvariable=self.cred_name_sv, font=app_style.FONT_PRESET_MAIN,
+                                            border_color=app_style.ACCENT_COLOR, border_width=1)
+        self.cred_login_entry = ctk.CTkEntry(self, textvariable=self.cred_login_sv, font=app_style.FONT_PRESET_MAIN,
+                                             border_color=app_style.ACCENT_COLOR, border_width=1)
         self.cred_password_entry = ctk.CTkEntry(self, textvariable=self.cred_password_sv,
-                                                font=app_style.FONT_PRESET_MAIN)
+                                                font=app_style.FONT_PRESET_MAIN, border_color=app_style.ACCENT_COLOR,
+                                                border_width=1)
 
         self.save_changes_button = ctk.CTkButton(self, text='SAVE', command=self.on_save_btn_click,
                                                  width=app_style.BUTTON_WIDTH, font=app_style.FONT_PRESET_SMALL,

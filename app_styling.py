@@ -1,7 +1,9 @@
+# File that stores all constants for gui
+
 APP_TITLE = 'MPM'
 APP_GEOMETRY = '720x520'
 
-ACCENT_COLOR = 'Blue'
+ACCENT_COLOR = '#1A5ACA'
 BACKGROUND_WHITE_COLOR = 'White'
 BACKGROUND_GREY_COLOR = '#ededed'
 HOVER_HIGHLIGHT_COLOR = '#fafafa'

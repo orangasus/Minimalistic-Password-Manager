@@ -1,4 +1,8 @@
+# Class that represents list of
+# saved credentials items in UI
+
 import customtkinter as ctk
+
 import app_styling as app_style
 
 
@@ -35,7 +39,7 @@ class CtkListViewItem(ctk.CTkFrame):
     def fill_grid_layout(self):
         self.cred_name_label.grid(row=0, column=1, padx=5, pady=1, sticky='ws')
         self.cred_login_label.grid(row=1, column=1, padx=5, pady=1, sticky='wn')
-        self.select_indicator_frame.grid(row=0, rowspan = 2, column=0, padx=0, pady=1, sticky='ns')
+        self.select_indicator_frame.grid(row=0, rowspan=2, column=0, padx=0, pady=1, sticky='ns')
 
     def on_click(self, event):
         self.controller.user_content_state['cur_item_ind'] = self.item_ind
@@ -47,8 +51,8 @@ class CtkListViewItem(ctk.CTkFrame):
         self.select_indicator_frame.configure(fg_color=self.indicator_color)
 
         self.controller.item_info_frame.update_labels_info(selected_item.cred_name,
-                                                selected_item.cred_login,
-                                                selected_item.cred_pwd)
+                                                           selected_item.cred_login,
+                                                           selected_item.cred_pwd)
         self.controller.show_item_related_frame(self.controller.item_info_frame)
 
     def change_select_indicator_color_to_stand(self):

@@ -1,10 +1,10 @@
+# Classes responsible for interacting
+# with app's database
+
 import sqlite3
+
 import encryption_module
-from encryption_module import encrypt_password
 
-
-# TODO:
-#   Add checker for values item uniqueness
 
 class UserTableManager:
     def __init__(self, connection):
@@ -91,7 +91,7 @@ class CredentialsTableManager:
 
     def insert_creds_item(self, user_login, cred_name, cred_login, cred_password):
         try:
-            encryption_key =  self.controller.user_table_manager.get_user_encryption_key_by_login(user_login)
+            encryption_key = self.controller.user_table_manager.get_user_encryption_key_by_login(user_login)
             encrypted_password = encryption_module.encrypt_password(cred_password, encryption_key)
             self.cur.execute(
                 'INSERT INTO CREDENTIALS(USER_LOGIN, CRED_NAME, CRED_LOGIN, CRED_PASSWORD) VALUES (?, ?, ?, ?)',
@@ -111,8 +111,9 @@ class CredentialsTableManager:
         try:
             encryption_key = self.controller.user_table_manager.get_user_encryption_key_by_login(user)
             encrypted_password = encryption_module.encrypt_password(cred_password, encryption_key)
-            self.cur.execute('SELECT ID FROM CREDENTIALS WHERE USER_LOGIN = ? AND CRED_LOGIN = ? AND CRED_PASSWORD = ? AND CRED_NAME = ?',
-                             (user, cred_login, encrypted_password, cred_name))
+            self.cur.execute(
+                'SELECT ID FROM CREDENTIALS WHERE USER_LOGIN = ? AND CRED_LOGIN = ? AND CRED_PASSWORD = ? AND CRED_NAME = ?',
+                (user, cred_login, encrypted_password, cred_name))
             return self.cur.fetchone()
         except sqlite3.Error as e:
             print(f"Error searching for item match: {e}")
@@ -130,20 +131,14 @@ class CredentialsTableManager:
     def get_all_creds_items_by_user(self, user_login):
         try:
             my_tuple = (user_login,)
-            print(type(my_tuple))
             self.cur.execute('SELECT * FROM CREDENTIALS WHERE USER_LOGIN = ?', my_tuple)
             res = self.cur.fetchall()
-            print(res)
             decrypted_res = []
-            try:
-                encryption_key = self.controller.user_table_manager.get_user_encryption_key_by_login(user_login)
-            except:
-                print('No bitches!')
+            encryption_key = self.controller.user_table_manager.get_user_encryption_key_by_login(user_login)
             for el in res:
                 el = list(el)
                 el[4] = encryption_module.decrypt_password(el[4], encryption_key)
                 decrypted_res.append(el)
-            print(decrypted_res)
             return decrypted_res
         except sqlite3.Error as e:
             print(f"Error retrieving credentials: {e}")

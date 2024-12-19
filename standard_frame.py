@@ -1,6 +1,8 @@
-import tkinter as tk
+# Abstract class used as a parent
+# most frames in the program
+
+
 import customtkinter as ctk
-import app_styling as app_style
 
 
 class StandardFrame(ctk.CTkFrame):

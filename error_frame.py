@@ -1,3 +1,6 @@
+# Class that implements popping
+# error widget for the UI
+
 import customtkinter as ctk
 
 import app_styling as app_style

@@ -1,3 +1,6 @@
+# Class that serves as an element
+# of credentials list in the UI
+
 import customtkinter as ctk
 
 import app_styling

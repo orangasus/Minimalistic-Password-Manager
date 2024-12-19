@@ -1,4 +1,5 @@
-
+# Data class representing single
+# credentials item stored by user
 
 class CredItem:
     def __init__(self, db_entry):

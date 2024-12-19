@@ -1,9 +1,15 @@
+# Class that implements entry field
+# but with a placeholder parameter
+
+
 import customtkinter as ctk
+
+import app_styling
 
 
 class EntryWithPlaceholder(ctk.CTkEntry):
     def __init__(self, parent, entry_str_var, pl_text):
-        super().__init__(parent, textvariable=entry_str_var)
+        super().__init__(parent, textvariable=entry_str_var, border_color=app_styling.ACCENT_COLOR, border_width=2)
 
         self.touched = False
 

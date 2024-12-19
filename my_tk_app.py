@@ -1,6 +1,10 @@
+# Class implementing app's main window
+# and general logic
+
 from content_related_frames import *
 from cred_item import CredItem
 from user_related_frames import *
+
 
 class AppWindow(ctk.CTk):
     def __init__(self, db_manager):
