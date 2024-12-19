@@ -233,6 +233,11 @@ class AddListItemFrame(StandardFrame):
         self.cred_password_entry.pack()
         self.save_cred_button.pack(pady=10)
 
+    def reset_frame(self):
+        self.str_var_cred_login.set('')
+        self.str_var_cred_password.set('')
+        self.str_var_cred_name.set('')
+
     def on_save_btn_click(self):
         user = self.controller.controller.app_state['cur_user']
         name, login = self.str_var_cred_name.get(), self.str_var_cred_login.get()
@@ -245,6 +250,7 @@ class AddListItemFrame(StandardFrame):
             self.controller.controller.fill_user_items_list()
             self.controller.controller.user_content_frame.upload_items_to_listbox()
             self.controller.show_item_related_frame(self.controller.item_empty_frame)
+            self.reset_frame()
 
 
 class EditCredItemFrame(StandardFrame):
