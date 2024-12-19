@@ -5,13 +5,12 @@ from user_related_frames import *
 
 #TODO
 #   check if user exists before creating
-#   test all functionality
-#   additional styling?
 
 class AppWindow(ctk.CTk):
     def __init__(self, db_manager):
         super().__init__()
         self.geometry(app_style.APP_GEOMETRY)
+        self.title(app_style.APP_TITLE)
         self.db_manager = db_manager
         self.app_state = {'cur_user': None}
         self.resizable(False, False)

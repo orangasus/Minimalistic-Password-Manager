@@ -139,6 +139,8 @@ class UserContentFrame(StandardFrame):
     def on_logout_btn_click(self):
         self.controller.user_items_list = []
         self.controller.app_state['cur_user'] = None
+        self.clear_items_listbox()
+        self.show_item_related_frame(self.item_empty_frame)
         self.controller.show_frame(self.controller.login_form_frame)
 
     def show_item_related_frame(self, frame):

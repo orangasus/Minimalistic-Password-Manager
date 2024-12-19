@@ -21,15 +21,16 @@ class EntryWithPlaceholder(ctk.CTkEntry):
         if not self.touched:
             self.delete(0, 'end')
             self.configure(text_color=self.text_color)
+        self.touched = True
 
     def on_entry_focus_out(self, event):
-        if self.get() == '':
-            self.touched = False
-            self.configure(text_color=self.pl_color)
+        if self.get() == '' or not self.touched:
             self.show_placeholder()
         else:
             self.touched = True
 
     def show_placeholder(self):
+        self.touched = False
+        self.configure(text_color=self.pl_color)
         self.delete(0, 'end')
         self.insert('end', self.pl_text)

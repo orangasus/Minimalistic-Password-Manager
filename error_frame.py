@@ -14,7 +14,7 @@ class ErrorFrame(ctk.CTkFrame):
         # self.title_label = ctk.CTkLabel(self, text=self.title, text_color='white',
         #                                 font=app_style.FONT_PRESET_MAIN)
         self.msg_label = ctk.CTkLabel(self, text=self.msg, text_color='white',
-                                      font=app_style.FONT_PRESET_MAIN)
+                                      font=app_style.FONT_PRESET_SMALL)
 
     def fill_frame_layout(self):
         # self.title_label.pack(padx=5, pady=5, side=ctk.LEFT)
