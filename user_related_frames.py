@@ -28,11 +28,14 @@ class LoginIntoAppFrame(StandardFrame):
         self.setup_grid()
         self.fill_window_layout()
 
-    def on_create_user_btn_click(self):
-        self.controller.show_frame(self.controller.create_user_frame)
+    def reset_frame(self):
         self.login_entry.show_placeholder()
         self.password_entry.show_placeholder()
         self.focus()
+
+    def on_create_user_btn_click(self):
+        self.controller.show_frame(self.controller.create_user_frame)
+        self.reset_frame()
 
     def setup_grid(self):
         self.grid_rowconfigure(0, weight=1)
@@ -59,6 +62,7 @@ class LoginIntoAppFrame(StandardFrame):
                 self.controller.fill_user_items_list()
                 self.controller.user_content_frame.upload_items_to_listbox()
                 self.controller.show_frame(self.controller.user_content_frame)
+                self.reset_frame()
             else:
                 self.error_frame.show_error_frame()
         else:
@@ -89,10 +93,13 @@ class CreateUserFrame(StandardFrame):
 
         self.fill_window_layout()
 
-    def on_back_btn_click(self):
+    def reset_frame(self):
         self.login_entry.show_placeholder()
         self.password_entry.show_placeholder()
         self.focus()
+
+    def on_back_btn_click(self):
+        self.reset_frame()
         self.controller.show_frame(self.controller.login_form_frame)
 
     def fill_window_layout(self):
