@@ -7,18 +7,23 @@ Minimalistic Password Manager is a straightforward and secure desktop applicatio
 - **Supports Multiple Users** - Users can easily log out, create new accounts etc
 ## Usage
 1. Create a User account
+   
 ![](./resources/img2.png)
 2. Log in
+
 ![](./resources/img1.png)
 3. Now you are able to see your stored items
+
 ![](./resources/img3.png)
 4. Let's create a couple of items
+
 ![](./resources/img4.png)
-5. Now all your passwords are neatly organized:)
+5. Now all your passwords are neatly organized :smile:
+
 ![](./resources/img5.png)
 ## Tech Stack
 - **SQLite3** for storing data
-- **Custom Tkinter** for GUI (never again)
+- **Custom Tkinter** for GUI (never again :expressionless:)
 - **Fernet** for encrypting user's saved items
 - **Bcrypt** for hashing user password
 ## Potential Improvements
