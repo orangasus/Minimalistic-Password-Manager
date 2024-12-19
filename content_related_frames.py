@@ -5,6 +5,7 @@ import app_styling as app_style
 from ctk_list_view import CtkListView
 from ctk_list_view_item import CtkListViewItem
 from standard_frame import StandardFrame
+import encryption_module
 
 
 class ItemInfoFrame(StandardFrame):
@@ -150,6 +151,7 @@ class UserContentFrame(StandardFrame):
         self.cred_listbox.delete_all_items_from_list_view()
 
     def upload_items_to_listbox(self):
+        self.cred_listbox.delete_all_items_from_list_view()
         self.fill_list_item_frames()
         self.cred_listbox.upload_all_items_to_list_view()
 
@@ -279,7 +281,7 @@ class EditCredItemFrame(StandardFrame):
 
     def on_save_btn_click(self):
         self.controller.db_manager.cred_table_manager.update_creds_item_by_id(
-            self.item_id, self.cred_login_sv.get(),
+            self.controller.controller.app_state['cur_user'], self.item_id, self.cred_login_sv.get(),
             self.cred_password_sv.get(), self.cred_name_sv.get()
         )
         self.controller.controller.fill_user_items_list()

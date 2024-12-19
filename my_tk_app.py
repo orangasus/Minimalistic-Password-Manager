@@ -2,10 +2,6 @@ from content_related_frames import *
 from cred_item import CredItem
 from user_related_frames import *
 
-
-#TODO
-#   check if user exists before creating
-
 class AppWindow(ctk.CTk):
     def __init__(self, db_manager):
         super().__init__()
@@ -54,5 +50,6 @@ class AppWindow(ctk.CTk):
     def fill_user_items_list(self):
         self.user_items_list = []
         db_items = self.db_manager.cred_table_manager.get_all_creds_items_by_user(self.app_state['cur_user'])
-        for item in db_items:
-            self.user_items_list.append(CredItem(item))
+        if db_items is not None:
+            for item in db_items:
+                self.user_items_list.append(CredItem(item))

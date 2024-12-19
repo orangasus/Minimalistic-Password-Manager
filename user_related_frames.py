@@ -4,6 +4,7 @@ import app_styling as app_style
 from entry_with_placeholder import EntryWithPlaceholder
 from error_frame import ErrorFrame
 from standard_frame import StandardFrame
+import encryption_module
 
 
 class LoginIntoAppFrame(StandardFrame):
@@ -55,10 +56,9 @@ class LoginIntoAppFrame(StandardFrame):
         password = self.str_var_user_password.get()
 
         if self.db_manager.user_table_manager.check_if_user_exists(login):
-            real_password = self.db_manager.user_table_manager.get_user_password(login)
-            if real_password == password:
+            hashed_password = self.db_manager.user_table_manager.get_user_password(login)
+            if encryption_module.check_if_password_matches_hashed(hashed_password, password):
                 self.controller.app_state['cur_user'] = login
-                print(self.controller.app_state['cur_user'])
                 self.controller.fill_user_items_list()
                 self.controller.user_content_frame.upload_items_to_listbox()
                 self.controller.show_frame(self.controller.user_content_frame)

@@ -1,4 +1,6 @@
 import sqlite3
+import encryption_module
+from encryption_module import encrypt_password
 
 
 # TODO:
@@ -15,7 +17,8 @@ class UserTableManager:
         CREATE TABLE IF NOT EXISTS USERS(
         ID INTEGER PRIMARY KEY AUTOINCREMENT,
         USER_LOGIN TEXT UNIQUE,
-        USER_PASSWORD TEXT)''')
+        USER_PASSWORD BLOB,
+        ENCRYPTION_KEY TEXT)''')
 
     def delete_user(self, login):
         try:
@@ -24,9 +27,15 @@ class UserTableManager:
         except sqlite3.Error as e:
             print(f"Error deleting user: {e}")
 
+    def get_user_encryption_key_by_login(self, login):
+        self.cur.execute('SELECT ENCRYPTION_KEY FROM USERS WHERE USER_LOGIN = ?', (login,))
+        return self.cur.fetchone()[0]
+
     def update_user_password(self, login, new_password):
+        new_hashed_password = encryption_module.hash_password(new_password)
+
         try:
-            self.cur.execute('UPDATE USERS SET USER_PASSWORD = ? WHERE USER_LOGIN = ?', (new_password, login))
+            self.cur.execute('UPDATE USERS SET USER_PASSWORD = ? WHERE USER_LOGIN = ?', (new_hashed_password, login))
             self.con.commit()
         except sqlite3.Error as e:
             print(f"Error updating password: {e}")
@@ -54,16 +63,20 @@ class UserTableManager:
 
     def insert_user(self, login, password):
         try:
-            self.cur.execute('INSERT INTO USERS(USER_LOGIN, USER_PASSWORD) VALUES (?, ?)', (login, password))
+            encryption_key = encryption_module.generate_user_key()
+            hashed_password = encryption_module.hash_password(password)
+            self.cur.execute('INSERT INTO USERS(USER_LOGIN, USER_PASSWORD, ENCRYPTION_KEY) VALUES (?, ?, ?)',
+                             (login, hashed_password, encryption_key))
             self.con.commit()
         except sqlite3.IntegrityError as e:
             print(f"Error inserting user: {e}")
 
 
 class CredentialsTableManager:
-    def __init__(self, connection):
+    def __init__(self, connection, controller):
         self.con = connection
         self.cur = self.con.cursor()
+        self.controller = controller
         self.create_creds_db_if_needed()
 
     def create_creds_db_if_needed(self):
@@ -78,9 +91,11 @@ class CredentialsTableManager:
 
     def insert_creds_item(self, user_login, cred_name, cred_login, cred_password):
         try:
+            encryption_key =  self.controller.user_table_manager.get_user_encryption_key_by_login(user_login)
+            encrypted_password = encryption_module.encrypt_password(cred_password, encryption_key)
             self.cur.execute(
                 'INSERT INTO CREDENTIALS(USER_LOGIN, CRED_NAME, CRED_LOGIN, CRED_PASSWORD) VALUES (?, ?, ?, ?)',
-                (user_login, cred_name, cred_login, cred_password))
+                (user_login, cred_name, cred_login, encrypted_password))
             self.con.commit()
         except sqlite3.Error as e:
             print(f"Error inserting credential: {e}")
@@ -94,42 +109,44 @@ class CredentialsTableManager:
 
     def search_for_item_match(self, user, cred_name, cred_login, cred_password):
         try:
+            encryption_key = self.controller.user_table_manager.get_user_encryption_key_by_login(user)
+            encrypted_password = encryption_module.encrypt_password(cred_password, encryption_key)
             self.cur.execute('SELECT ID FROM CREDENTIALS WHERE USER_LOGIN = ? AND CRED_LOGIN = ? AND CRED_PASSWORD = ? AND CRED_NAME = ?',
-                             (user, cred_login, cred_password, cred_name))
+                             (user, cred_login, encrypted_password, cred_name))
             return self.cur.fetchone()
         except sqlite3.Error as e:
             print(f"Error searching for item match: {e}")
 
-    def update_creds_item_by_id(self, item_id, cred_login, cred_password, cred_name):
+    def update_creds_item_by_id(self, user, item_id, cred_login, cred_password, cred_name):
         try:
+            encryption_key = self.controller.user_table_manager.get_user_encryption_key_by_login(user)
+            encrypted_password = encryption_module.encrypt_password(cred_password, encryption_key)
             self.cur.execute('UPDATE CREDENTIALS SET CRED_LOGIN = ?, CRED_PASSWORD = ?, CRED_NAME = ? WHERE ID = ?',
-                             (cred_login, cred_password, cred_name, item_id))
+                             (cred_login, encrypted_password, cred_name, item_id))
             self.con.commit()
         except sqlite3.Error as e:
             print(f"Error updating credential: {e}")
 
     def get_all_creds_items_by_user(self, user_login):
         try:
-            self.cur.execute('SELECT * FROM CREDENTIALS WHERE USER_LOGIN = ?', (user_login,))
-            return self.cur.fetchall()
+            my_tuple = (user_login,)
+            print(type(my_tuple))
+            self.cur.execute('SELECT * FROM CREDENTIALS WHERE USER_LOGIN = ?', my_tuple)
+            res = self.cur.fetchall()
+            print(res)
+            decrypted_res = []
+            try:
+                encryption_key = self.controller.user_table_manager.get_user_encryption_key_by_login(user_login)
+            except:
+                print('No bitches!')
+            for el in res:
+                el = list(el)
+                el[4] = encryption_module.decrypt_password(el[4], encryption_key)
+                decrypted_res.append(el)
+            print(decrypted_res)
+            return decrypted_res
         except sqlite3.Error as e:
             print(f"Error retrieving credentials: {e}")
-
-    def get_cred_item_by_cred_name(self, user_login, cred_name):
-        try:
-            self.cur.execute('SELECT * FROM CREDENTIALS WHERE CRED_NAME = ? AND USER_LOGIN = ?',
-                             (cred_name, user_login))
-            return self.cur.fetchall()
-        except sqlite3.Error as e:
-            print(f"Error retrieving credential: {e}")
-
-    def get_cred_item_by_cred_login(self, user_login, cred_login):
-        try:
-            self.cur.execute('SELECT * FROM CREDENTIALS WHERE CRED_LOGIN = ? AND USER_LOGIN = ?',
-                             (cred_login, user_login))
-            return self.cur.fetchall()
-        except sqlite3.Error as e:
-            print(f"Error retrieving credential: {e}")
 
     def check_if_item_is_unique_for_user(self, user_login, cred_name,
                                          cred_login, cred_password):
@@ -148,7 +165,7 @@ class CredentialsTableManager:
 class DataBaseManager:
     def __init__(self):
         self.con = sqlite3.connect('AppDB.db')
-        self.cred_table_manager = CredentialsTableManager(self.con)
+        self.cred_table_manager = CredentialsTableManager(self.con, self)
         self.user_table_manager = UserTableManager(self.con)
 
     def close_db_connection(self):
